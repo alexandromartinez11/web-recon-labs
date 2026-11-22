@@ -1,1 +1,40 @@
-# web-recon-labs
+# Web Recon Labs
+
+These labs are from the book "101 Labs - CompTIA PenTest+ from 101Labs.net"
+
+Notes from hands-on labs I'm doing while learning security tooling. All testing is done on my own machine, my own site, or practice sites built for this purpose.
+
+## Lab 1: Port scanning with nmap
+- Scanned the lab book's example IP address and got empty/filtered results, because that address didn't exist on my network (mine was on a different subnet)
+- Learned to check my own VM's address before scanning
+- Scanned my own web server and saw its port as open
+
+**Takeaway:** nmap finds which doors (ports) are open on a computer, and a scan is only useful if the target address is real.
+
+## Lab 2: Content discovery with ffuf
+- Built my own practice target on Kali: a folder with `admin/` and `backup/` directories and a `secret.txt` file, served with Python's built-in web server
+- Ran ffuf with the SecLists `common.txt` wordlist plus the `.txt` extension: 9,500 requests in about 3 seconds (roughly 2,600 requests per second)
+- ffuf found all three items: `admin` (301), `backup` (301), and `secret.txt` (200)
+- Troubleshooting: my first runs showed 100% errors because I had stopped the web server before running ffuf, so nothing was listening. The fix was running the server in one terminal tab and ffuf in a second tab
+- Also tried the lab book's example IP address, which doesn't exist on my network, and saw slow timeouts and no results
+
+**Takeaway:** ffuf can't see inside a site, so it guesses names from a wordlist and reports the ones that exist. It only finds names that are in its list, so a guessable path like `/admin` isn't real security. Defenders should keep backups and configs out of the web root, protect admin panels, and watch logs for bursts of requests.
+
+## Lab 3: Burp Suite proxy and site map
+- Installed Burp Suite Community Edition on Kali Linux (arm64, UTM VM)
+- Troubleshooting: a case-sensitivity typo in the command (`Burpsuite` vs `burpsuite`), then a "No space left on device" error caused by the host Mac's disk filling up; freed space and reinstalled
+- Pointed Firefox at Burp's proxy (127.0.0.1:8080)
+- Hit certificate warnings on HTTPS sites and learned that HSTS blocks exceptions on some of them
+- Browsed apple.com through Burp, built a site map, and read a raw request and response (301 redirect to www.apple.com)
+
+**Takeaway:** Burp shows the messages a browser normally hides, which is the foundation of web testing.
+
+## Lab 4: Web crawling and scraping with Photon
+- Installed Photon from GitHub on Kali and resolved Kali's "externally-managed-environment" pip error
+- Crawled a practice site (books.toscrape.com) at depth 2: 75 requests and 3,447 internal links saved to `internal.txt`, in 48 seconds
+- Read the output and spotted site structure (category pages, book pages, relative links)
+
+**Takeaway:** Crawling maps a site and scraping extracts data from it, and both are early steps in recon.
+
+## Tools
+Kali Linux · nmap · ffuf · SecLists · Burp Suite · Photon · Python
