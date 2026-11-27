@@ -1,4 +1,3 @@
-
 # PenTest Labs
 
 These labs are from the book "101 Labs - CompTIA PenTest+ from 101Labs.net"
@@ -71,6 +70,16 @@ Notes from hands-on labs I'm doing while learning security tooling. All testing 
 
 **Takeaway:** A WAF acts as a protective layer between visitors and a web application, filtering potentially malicious HTTP requests. Nmap offers basic WAF detection, while Wafw00f specializes in identifying WAFs by analyzing server responses. Detection results are indicators, not absolute proof of the exact security product.
 
+## Lab 16: Firewall detection (hping3, traceroute, Nmap)
+- Used hping3, traceroute, and Nmap to look for signs of a firewall, using the gateway of my VM network (`192.168.64.1`) as the target because the book's Metasploitable VM isn't practical on Apple Silicon
+- Learned to read TCP replies: SYN-ACK (open), RST-ACK (closed), and no reply (filtered)
+- `ping` answered; a SYN to port 80 returned RST-ACK (closed) and a SYN to port 53 returned SYN-ACK (open, DNS)
+- A packet with no flags got no reply, but that first test used the default port 0, so I treated it as inconclusive
+- `traceroute` and `nmap --traceroute` showed one hop at about 0.3 ms, and Nmap found 996 closed ports answering with resets and none filtered, so I saw no sign of a firewall on the gateway
+- Scanning my own VM earlier showed every port as filtered and took much longer, which suggests filtering but doesn't prove a firewall
+
+**Takeaway:** A machine that answers, whether open or closed, isn't silently dropping traffic, while consistent silence on ports is the clue to investigate further. `filtered` suggests a firewall but isn't proof, so compare several kinds of probes.
+
 ## Tools
 
 - **Kali Linux** – Linux distribution designed for penetration testing and cybersecurity.
@@ -84,4 +93,5 @@ Notes from hands-on labs I'm doing while learning security tooling. All testing 
 - **DVWA** – Intentionally vulnerable web application for practicing web security.
 - **LBD** – Load Balancing Detector; checks websites for signs of load balancing.
 - **Wafw00f** – Specialized tool for detecting Web Application Firewalls.
-
+- **hping3** – Packet crafting tool that sends custom TCP, UDP, and ICMP packets and shows the replies.
+- **traceroute** – Shows the devices a packet passes through on the way to a target.
